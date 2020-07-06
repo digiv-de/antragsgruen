@@ -231,7 +231,7 @@ if ($params->isSamlActive()) {
     <div id="admin_login_saml" class="hidden">';
     }
 
-    echo '<h2 class="green">&quot;Grünes Netz&quot;-Login (Wurzelwerk)</h2>
+    echo '<h2 class="green">DigiV-Login</h2>
     <div class="content row">';
 
     $action = $params->domainPlain . 'loginsaml';
@@ -246,11 +246,9 @@ if ($params->isSamlActive()) {
 
     echo Html::endForm();
     echo '<div id="loginSamlHint">
-    <strong>Hinweis:</strong> Hier wirst du auf eine Seite unter "https://saml.gruene.de/" umgeleitet,
-    die vom Bundesverband betrieben wird.<br>Dort musst du dein Benutzer*innenname/Passwort des Grünen Netzes
-    (Wurzelwerk) eingeben. Dein Passwort bleibt dabei geheim und wird <i>nicht</i> an Antragsgrün übermittelt.
+    <strong>Hinweis:</strong> Hier wirst du auf die Benutzerverwaltung des DigiV-Projekts (unterhalb von https://auth.digiv.de) umgeleitet. Dort kannst du deine Logindaten für die Versammlung eingeben. Dein Passwort bleibt dabei geheim und wird <i>nicht</i> an Antragsgrün übermittelt.
     <br><br>
-    <strong>Zugangsdaten vergessen?</strong> Klicke auf „Einloggen” und auf der folgenden Seite auf „Passwort vergessen?”.
+    <strong>Zugangsdaten vergessen?</strong> Klicke auf „DigiV-Login” und auf der folgenden Seite auf „Passwort vergessen?”.
         </div>
 </div>';
 
