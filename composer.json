@@ -34,10 +34,10 @@
     "paragonie/sodium_compat": "^1.6",
     "scssphp/scssphp": "^1.0.7",
     "swiftmailer/swiftmailer": "^6.2",
-    "guzzlehttp/guzzle": "^6.5"
-    "yiisoft/yii2-redis": "Allows using redis for caching",
-    "simplesamlphp/simplesamlphp": "Allowed Single Sign On Authentication using SAML",
-    "predis/predis": "If simplesaml should store its data to redis"
+    "guzzlehttp/guzzle": "^6.5",
+    "yiisoft/yii2-redis": "*",
+    "simplesamlphp/simplesamlphp": "*",
+    "predis/predis":  "*"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "^2.1.3",
