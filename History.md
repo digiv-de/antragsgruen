@@ -3,11 +3,12 @@
 ## Version 4.7.0 [not released yet]
 
 - Internal: the login system now supports plugins for retrieving user accounts from external sources, e.g. CMS systems with an existing user database. As an example, a integration into Drupal/CiviCRM can be found in the plugins/drupal_civicrm-folder.
-- Internal: Plugins can now provide custom amendment numberings.
+- Internal: Plugins can now provide custom amendment numberings and add extra settings and data fields for amendments and motions.
 
 ### Version 4.6.1 [not released yet]
 
 - Several minor accessibility and performance improvements.
+- If supporting a motion or amendment is allowed after publication, then the deadline for supporting it is now not affected anymore by the deadline for the submission.
 - Updates to core libraries (Yii and jQuery).
 - Bugfix: A bug that lead to unchanged text before changed text being shown as deleted and inserted again was fixed.
 - Bugfix: When creating a new amendment based on an existing one as admin while the settings "Amendments may only change one paragraph" was set, the pre-defined changes taken over from the existing amendment were not properly editable.
