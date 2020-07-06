@@ -10,10 +10,10 @@ use app\models\db\User;
 
 class WurzelwerkSamlClient implements ClientInterface
 {
-    const PARAM_EMAIL        = 'gmnMail';
-    const PARAM_USERNAME     = 'urn:oid:0.9.2342.19200300.100.1.1';
-    const PARAM_GIVEN_NAME   = 'urn:oid:2.5.4.42';
-    const PARAM_FAMILY_NAME  = 'urn:oid:2.5.4.4';
+    const PARAM_EMAIL        = 'email';
+    const PARAM_USERNAME     = 'username';
+    const PARAM_GIVEN_NAME   = 'firstname';
+    const PARAM_FAMILY_NAME  = 'lastname';
     const PARAM_ORGANIZATION = 'membershipOrganizationKey';
 
     /** @var Simple */

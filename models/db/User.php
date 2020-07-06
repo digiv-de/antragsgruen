@@ -427,10 +427,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getWurzelwerkName(): ?string
     {
-        if (preg_match("/https:\/\/([a-z0-9_-]+)\.netzbegruener\.in\//siu", $this->auth, $matches)) {
-            return $matches[1];
-        }
-        if (preg_match("/https:\/\/service\.gruene.de\/openid\/([a-z0-9_-]+)/siu", $this->auth, $matches)) {
+        if (preg_match("/https:\/\/auth\.digiv\.de\/openid\/([a-z0-9_-]+)/siu", $this->auth, $matches)) {
             return $matches[1];
         }
         return null;
@@ -438,10 +435,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function isWurzelwerkUser(): bool
     {
-        if (preg_match("/https:\/\/[a-z0-9_-]+\.netzbegruener\.in\//siu", $this->auth)) {
-            return true;
-        }
-        if (preg_match("/https:\/\/service\.gruene.de\/openid\/[a-z0-9_-]+/siu", $this->auth)) {
+        if (preg_match("/https:\/\/auth\.digiv\.de\/openid\/[a-z0-9_-]+/siu", $this->auth)) {
             return true;
         }
         return false;
@@ -449,7 +443,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public static function wurzelwerkId2Auth(string $username): string
     {
-        return 'openid:https://service.gruene.de/openid/' . $username;
+        return 'openid:https://auth.digiv.de/openid/' . $username;
     }
 
     public function isEmailAuthUser(): bool
@@ -625,7 +619,7 @@ class User extends ActiveRecord implements IdentityInterface
                 return 'E-Mail: ' . $authparts[1];
             case 'openid':
                 if ($this->isWurzelwerkUser()) {
-                    return 'Grünes Netz: ' . $this->getWurzelwerkName();
+                    return 'DigiV-Login: ' . $this->getWurzelwerkName();
                 } else {
                     return $this->auth;
                 }

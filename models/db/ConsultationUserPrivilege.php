@@ -157,7 +157,7 @@ class ConsultationUserPrivilege extends ActiveRecord
         if (preg_match('/[^\w]/siu', $username)) {
             throw new FormError('Invalid username');
         }
-        $auth = 'openid:https://service.gruene.de/openid/' . $username;
+        $auth = 'openid:https://auth.digiv.de/openid/' . $username;
 
         /** @var User $user */
         $user = User::find()->where(['auth' => $auth])->andWhere('status != ' . User::STATUS_DELETED)->one();
