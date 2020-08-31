@@ -21,7 +21,7 @@ class Exporter
         $this->app    = $app;
     }
 
-    public static function encodePlainString(string $str): string
+    public static function encodePlainString(string $str, bool $textLineBreaks = true): string
     {
         $replaces = [
             '\\'                     => '\textbackslash{}',
@@ -37,7 +37,6 @@ class Exporter
             '^'                      => '\^{}',
             '\#\#\#LINENUMBER\#\#\#' => '###LINENUMBER###',
             '\#\#\#LINEBREAK\#\#\#'  => '###LINEBREAK###',
-            "\n"                     => '\\linebreak{}' . "\n", // Adding a {} at the end prevents broken LaTeX-Files if the next line begins with a "[",
             "ä"                      => "\\\"a",
             "ö"                      => "\\\"o",
             "ü"                      => "\\\"u",
@@ -46,6 +45,11 @@ class Exporter
             "Ü"                      => "\\\"U",
             "ß"                      => "\\ss{}",
         ];
+        if ($textLineBreaks) {
+            $replaces["\n"] = '\\linebreak{}' . "\n"; // Adding a {} at the end prevents broken LaTeX-Files if the next line begins with a "["
+        } else {
+            $replaces["\n"] = ' '; // HTML-like behavior
+        }
         return str_replace(array_keys($replaces), array_values($replaces), $str);
     }
 
@@ -55,9 +59,11 @@ class Exporter
      */
     public static function getMotionLinesToTeX($lines)
     {
+        // Add ###LINEBREAK### where LaTeX will need to add a \\linebreak; that is, where there is inline text before the line end
         $str = implode('###LINEBREAK###', $lines);
         $str = str_replace('<br>###LINEBREAK###', '###LINEBREAK###', $str);
         $str = str_replace('<br>' . "\n" . '###LINEBREAK###', '###LINEBREAK###', $str);
+        $str = preg_replace('/(?<tag><\\/(div|p|ul|ol|li|blockquote)> *)###LINEBREAK###/siu', '$1' . "\n", $str);
 
         // Enforce a workaround to enable empty lines by using <p><br></p>
         $str = preg_replace('/(<p[^>]*>)\s*<br>\s*(<\/p>)/siu', '$1 $2', $str);
@@ -74,6 +80,10 @@ class Exporter
         $str = str_replace('\linebreak{}' . "\n" . '\begin{enumerate}', "\n" . '\begin{enumerate}', $str);
         $str = str_replace('\end{enumerate}' . "\n\n", '\end{enumerate}' . "\n", $str);
         $str = preg_replace('/(\\\\linebreak{}\\n*)+\\\\begin{enumerate}/siu', "\n\begin{enumerate}", $str);
+
+        // \end{itemize} \newline \begin{itemize} => \end{itemize} \phantom{ } \begin{itemize}
+        // \newline itself would break, \phantom{ }\newline would lead to two line number
+        $str = preg_replace('/(\\}\s*)\\\\newline/siu', '$1\\phantom{ }', $str);
 
         return $str;
     }
@@ -105,7 +115,7 @@ class Exporter
     {
         if ($node->nodeType === XML_TEXT_NODE) {
             /** @var \DOMText $node */
-            $str = static::encodePlainString($node->data);
+            $str = static::encodePlainString($node->data, false);
             if (in_array('underlined', $extraStyles) || in_array('strike', $extraStyles)) {
                 $words = explode(' ', $str);
                 if (in_array('underlined', $extraStyles)) {
@@ -128,6 +138,8 @@ class Exporter
             if (in_array('del', $extraStyles)) {
                 $str = '\textcolor{Delete}{' . $str . '}';
             }
+
+            // echo 'Text node: "' . $node->data . '" => "' . $str . '"' . "\n";
             return $str;
         } else {
             $content = '';
@@ -176,6 +188,8 @@ class Exporter
                     $content .= static::encodeHTMLNode($child, $childStyles);
                 }
             }
+
+            // echo 'Node "' . $node->nodeName . '" => Content "' . $content . '"' . "\n";
 
             switch ($node->nodeName) {
                 case 'h4':
@@ -349,6 +363,14 @@ class Exporter
         if (trim(str_replace('###LINENUMBER###', '', $out), "\n") == ' ') {
             $out = str_replace(' ', '{\color{white}.}', $out);
         }
+        // Strip out leading and trailing white spaces - has more aesthetical reasons; normalized TeX is easier to test
+        $out = preg_replace('/\\n +/siu', "\n", $out);
+        $out = preg_replace('/###LINEBREAK### +/siu', "###LINEBREAK###", $out);
+        $out = preg_replace('/ +\\n/siu', "\n", $out);
+        $out = preg_replace('/ +###LINEBREAK###/siu', "###LINEBREAK###", $out);
+
+        // \end{itemize} + \newline => \end{itemize} + \phantom{ }
+        $out = preg_replace('/\\\\end\{itemize\}\n\\\\newline\n/siu', "\\end{itemize}\n\\phantom{ }\n", $out);
 
         return $out;
     }
